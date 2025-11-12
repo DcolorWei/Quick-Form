@@ -115,6 +115,7 @@ const Component = () => {
                         <TableColumn align="center">字段类型</TableColumn>
                         <TableColumn align="center">可选择项</TableColumn>
                         <TableColumn align="center">备注（用户可见）</TableColumn>
+                        <TableColumn align="center">提示</TableColumn>
                         <TableColumn align="center">操作</TableColumn>
                     </TableHeader>
                     <TableBody
@@ -200,7 +201,7 @@ const Component = () => {
                                     </TableCell>
                                     <TableCell align="center" className="w-28">{TypeSelect}</TableCell>
                                     <TableCell align="center" >{RadioSelect}</TableCell>
-                                    <TableCell align="center" className="w-1/2">
+                                    <TableCell align="center" className="w-1/3">
                                         <Input
                                             placeholder="无备注" variant="bordered" defaultValue={field.comment}
                                             onValueChange={(comment) => {
@@ -208,11 +209,19 @@ const Component = () => {
                                             }}
                                         />
                                     </TableCell>
+                                    <TableCell align="center" className="w-1/3">
+                                        <Input
+                                            placeholder="无提示" variant="bordered" defaultValue={field.placeholder}
+                                            onValueChange={(placeholder) => {
+                                                FormFieldRouter.update({ field_id: field.id, placeholder })
+                                            }}
+                                        />
+                                    </TableCell>
                                     <TableCell className="min-w-40">
-                                        <Button className="mr-1" variant="bordered" color="primary" size="sm" onClick={() => setFocusFormField(field)}>
+                                        <Button className="mr-1" variant="bordered" color="primary" size="sm">
                                             上升
                                         </Button>
-                                        <Button variant="bordered" color="primary" size="sm" onClick={() => setFocusFormField(field)}>
+                                        <Button variant="bordered" color="primary" size="sm">
                                             下降
                                         </Button>
                                     </TableCell>

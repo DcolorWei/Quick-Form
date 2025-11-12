@@ -6,4 +6,5 @@ export class FormFieldEntity extends BaseEntity {
     field_name: string;
     field_type: FieldType;
     comment: string;
+    placeholder: string;
 }

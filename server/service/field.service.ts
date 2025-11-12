@@ -28,13 +28,16 @@ export async function getFieldList(form_name: string): Promise<FormFieldImpl[]> 
     return fields;
 }
 
-export async function createField(field: Omit<FormFieldImpl, "id"|"comment">): Promise<boolean> {
+export async function createField(field: Omit<FormFieldImpl, "id" | "comment" | "placeholder">): Promise<boolean> {
     const { form_name, field_name } = field;
     const exist = await FieldRepository.findOne({ form_name, field_name });
     if (exist) {
         return false;
     }
-    const result = await FieldRepository.insert(field);
+    const result = await FieldRepository.insert({
+        ...field,
+        placeholder: ""
+    });
     return result;
 }
 

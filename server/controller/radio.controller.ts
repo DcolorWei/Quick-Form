@@ -6,7 +6,7 @@ import { createRadio, updateRadio } from "../service/field.service";
 async function create(query: FormFieldRadioCreateRequest): Promise<FormFieldRadioCreateResponse> {
     const { field_id, radio_name } = query;
     if (!field_id || !radio_name) return { success: false };
-    const success = await createRadio({ field_id, radio_name, useful: true })
+    const success = await createRadio({ field_id, radio_name, useful: false })
     return { success };
 }
 
