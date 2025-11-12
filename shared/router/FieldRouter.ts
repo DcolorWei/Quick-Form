@@ -68,6 +68,7 @@ export interface FormFieldUpdateRequest extends BaseRequest {
     field_name?: string;
     field_type?: FieldType;
     comment?: string;
+    placeholder?: string;
 }
 
 export interface FormFieldUpdateResponse extends BaseResponse { }

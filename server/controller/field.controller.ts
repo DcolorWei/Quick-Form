@@ -29,9 +29,13 @@ async function update(query: FormFieldUpdateRequest): Promise<FormFieldUpdateRes
         const success = await updateSingleField(field_id, "field_type", field_type);
         if (!success) return { success: false };
     }
-    if (comment) {
+    if (typeof comment === "string") {
         const success = await updateSingleField(field_id, "comment", comment);
         if (!success) return { success: false };
+    }
+    if (typeof query.placeholder === "string") {
+        const success = await updateSingleField(field_id, "placeholder", query.placeholder);
+        if (!success) return { success: false }
     }
     return { success: true };
 }

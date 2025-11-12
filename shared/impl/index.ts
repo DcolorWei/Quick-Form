@@ -2,13 +2,14 @@ import { FormFieldEntity } from "../types/FormField";
 import { FormFieldRadioEntity } from "../types/FormFieldRadio";
 import { FieldType } from "./field";
 
-export class FormFieldImpl implements Pick<FormFieldEntity, "id" | "form_name" | "field_name" | "field_type" | "comment"> {
+export class FormFieldImpl implements Pick<FormFieldEntity, "id" | "form_name" | "field_name" | "field_type" | "comment" | "placeholder"> {
     id: string;
     form_name: string;
     field_name: string;
     field_type: FieldType;
-    comment: string;    
     radios?: FormFieldRadioImpl[];
+    comment: string;
+    placeholder: string;
     constructor(field: FormFieldEntity, radios?: FormFieldRadioImpl[]) {
         this.id = field.id;
         this.field_name = field.field_name;
@@ -17,6 +18,7 @@ export class FormFieldImpl implements Pick<FormFieldEntity, "id" | "form_name" |
             this.radios = radios
         }
         this.comment = field.comment;
+        this.placeholder = field.placeholder
     }
 }
 export class FormFieldRadioImpl implements Pick<FormFieldRadioEntity, "id" | "field_id" | "radio_name" | "useful"> {
