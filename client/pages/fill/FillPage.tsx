@@ -39,7 +39,7 @@ const Component = () => {
     async function loadRecord(code: string) {
         let id = localStorage.getItem("entry_id");
         if (!id) return;
-        await RecordRouter.get(
+        await RecordRouter.history(
             { id, code },
             async ({ form_name, fields, records, item_id, code, check }: RecordGetResponse) => {
                 if (!check) {

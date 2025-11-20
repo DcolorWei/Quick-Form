@@ -10,12 +10,12 @@ import {
     FormRouterInstance,
 } from "../../shared/router/FormRouter";
 import { inject, injectws } from "../lib/inject";
-import { createField, getFormList, updateFormName } from "../service/field.service";
+import { createField, getFormBriefList, getFormList, updateFormName } from "../service/field.service";
 
 async function list(query: FormListQuery): Promise<FormListResponse> {
-    if (!query.page) return { list: [], total: 0 };
-    const list = await getFormList();
-    return { list, total: list.length };
+    if (!query.page) return { list: [], total: 0, success: false };
+    const list = await getFormBriefList();
+    return { list, total: list.length, success: true };
 }
 
 async function create(query: FormCreateRequest): Promise<FormCreateResponse> {

@@ -15,6 +15,10 @@ export const MenuComp = ({ now }: { now?: string }) => {
             name: "表单管理",
             link: "/field",
         },
+        {
+            name: "数据反馈",
+            link: "/record",
+        },
     ];
 
     function renderBody(onClose: Function) {
