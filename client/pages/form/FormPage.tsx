@@ -13,9 +13,12 @@ import { FormListResponse } from "../../../shared/router/FormRouter";
 import CreateRecordModal from "./CreateRecordEditor";
 import { FormFieldImpl } from "../../../shared/impl";
 import { RecordGetResponse } from "../../../shared/router/RecordRouter";
+import { useNavigate } from "react-router-dom";
 
 const Component = () => {
     const baseurl = location.host + "/fill?t=";
+
+    const navigate = useNavigate();
 
     const [formList, setFormList] = useState<
         Array<{
@@ -31,6 +34,11 @@ const Component = () => {
     const [focusForm, setFocusForm] = useState<string | null>(null);
 
     const [isNewRecordOpen, setNewRecordOpen] = useState(false);
+
+    function viewRecords(formname: string) {
+        localStorage.setItem("formname", formname);
+        navigate("/record");
+    }
 
     function openFormEditor(formname?: string) {
         if (formname) {
@@ -112,6 +120,9 @@ const Component = () => {
     useEffect(() => {
         FormRouter.list({ page: 1 }, (data: FormListResponse) => {
             setFormList(data.list);
+            if (data.list.length) {
+                localStorage.setItem("formname", data.list[0].form_name);
+            }
         });
     }, []);
 
@@ -143,7 +154,9 @@ const Component = () => {
                         );
                         const indicator = (
                             <div className="flex flex-row gap-3">
-                                <div className="text-sm text-primary">查看</div>
+                                <div className="text-sm text-primary" onClick={() => viewRecords(form_name)}>
+                                    查看
+                                </div>
                                 <div className="text-sm text-primary" onClick={() => openFormEditor(form_name)}>
                                     重命名
                                 </div>

@@ -7,6 +7,7 @@ import FormPage from "./pages/form/FormPage";
 import FormFieldPage from "./pages/field/FormFieldPage";
 import FillPage from "./pages/fill/FillPage";
 import HomePage from "./pages/home/HomePage";
+import RecordPage from "./pages/record/RecordPage";
 
 const PrivateRoute = ({ redirectPath = "/auth" }) => {
     // 检查 localStorage 中的 token
@@ -25,6 +26,7 @@ const App = () => {
                 <Route element={<PrivateRoute />}>
                     <Route path="/form" element={<FormPage />} />
                     <Route path="/field" element={<FormFieldPage />} />
+                    <Route path="/record" element={<RecordPage />} />
                 </Route>
                 <Route path="*" element={<Navigate to="/home" replace />} />
             </Routes>

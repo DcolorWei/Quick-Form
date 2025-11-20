@@ -67,9 +67,9 @@ const Component = () => {
 
     useEffect(() => {
         FormRouter.list({ page: 1 }, (data: FormListResponse) => {
-            setFormList(data.list);
+            setFormList(data.list.map((i) => i.form_name));
             if (data.list.length) {
-                const form_name = data.list[0];
+                const form_name = data.list[0]?.form_name;
                 const page = 1;
                 setFormName(form_name);
                 setPage(page);
