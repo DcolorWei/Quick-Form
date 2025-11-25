@@ -15,16 +15,13 @@ import {
     TableRow,
 } from "@heroui/react";
 import { FormFieldImpl } from "../../../shared/impl";
-import { FormFieldCreateResponse, FormFieldListResponse } from "../../../shared/router/FieldRouter";
 import { FormRouter, FormFieldRouter, FormFieldRadioRouter } from "../../api/instance";
 import FormEditor from "../form/FormEditor";
 import FieldEditor from "./FormFieldEditor";
 import RadioEditor from "./FormFieldRadioEditor";
 import { toast } from "../../methods/notify";
-import { FormListResponse } from "../../../shared/router/FormRouter";
 import { FieldTypeList } from "../form/types";
 import { FieldType } from "../../../shared/impl/field";
-import { FormFieldRadioCreateResponse } from "../../../shared/router/RadioRouter";
 import { Locale } from "../../methods/locale";
 
 const Component = () => {
@@ -64,6 +61,31 @@ const Component = () => {
             const { list, total } = data;
             renderFormField(list, total);
         }
+    }
+
+    async function changeFieldPosition(field_id: string, direction: boolean) {
+        const index = formFieldList.findIndex((i) => i.id == field_id);
+        if (index == -1) {
+            return;
+        }
+        if (index === 0 || index === formFieldList.length - 1) {
+            return;
+        }
+        // UPON false
+        let position = formFieldList[index].position;
+        if (!direction) {
+            const prevPosition = formFieldList[index - 1].position;
+            const prevPrevPosition = formFieldList[index - 2]?.position || 0;
+            position = (prevPosition + prevPrevPosition) / 2;
+        }
+        // DOWN true
+        if (direction) {
+            const nextPosition = formFieldList[index + 1].position;
+            const nextNextPosition = formFieldList[index + 2]?.position || nextPosition + 0.001;
+            position = (nextPosition + nextNextPosition) / 2;
+        }
+        await FormFieldRouter.update({ field_id, position });
+        await chooseForm(formName);
     }
 
     function openFormEditor(formname?: string) {
@@ -169,14 +191,7 @@ const Component = () => {
                         <TableColumn align="center">{locale.TableHeaderHintColumn}</TableColumn>
                         <TableColumn align="center">{locale.TableHeaderActionsColumn}</TableColumn>
                     </TableHeader>
-                    <TableBody
-                        isLoading={isLoading}
-                        loadingContent={
-                            <div className="w-full h-full bg-[rgba(0,0,0,0.1)]">
-                                <Spinner />
-                            </div>
-                        }
-                    >
+                    <TableBody isLoading={isLoading}>
                         {formFieldList.map((field) => {
                             if (!field.radios) field.radios = [];
                             const TypeSelect = (
@@ -284,11 +299,22 @@ const Component = () => {
                                             }}
                                         />
                                     </TableCell>
-                                    <TableCell className="min-w-40">
-                                        <Button className="mr-1" variant="bordered" color="primary" size="sm">
+                                    <TableCell className="min-w-48">
+                                        <Button
+                                            className="mr-1"
+                                            variant="bordered"
+                                            color="primary"
+                                            size="sm"
+                                            onClick={() => changeFieldPosition(field.id, false)}
+                                        >
                                             {locale.TableBodyUponSort}
                                         </Button>
-                                        <Button variant="bordered" color="primary" size="sm">
+                                        <Button
+                                            variant="bordered"
+                                            color="primary"
+                                            size="sm"
+                                            onClick={() => changeFieldPosition(field.id, true)}
+                                        >
                                             {locale.TableBodyDownSort}
                                         </Button>
                                     </TableCell>
