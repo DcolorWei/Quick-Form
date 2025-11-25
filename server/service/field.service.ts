@@ -81,7 +81,12 @@ export async function createField(
     if (exist) {
         return null;
     }
-    const result = await FieldRepository.insert({ ...field, position, comment: "", placeholder: "" });
+    const result = await FieldRepository.insert({
+        ...field,
+        position,
+        comment: "",
+        placeholder: "",
+    });
     return result;
 }
 

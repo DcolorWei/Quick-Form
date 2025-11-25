@@ -78,6 +78,8 @@ export interface FormFieldUpdateRequest extends BaseRequest {
     position?: number;
     comment?: string;
     placeholder?: string;
+    required?: boolean;
+    disabled?: boolean;
 }
 
 export interface FormFieldUpdateResponse extends BaseResponse {}

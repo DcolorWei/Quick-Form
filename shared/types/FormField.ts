@@ -8,4 +8,6 @@ export class FormFieldEntity extends BaseEntity {
     comment: string;
     placeholder: string;
     position: number;
+    required: boolean;
+    disabled: boolean;
 }

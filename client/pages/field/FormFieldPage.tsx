@@ -2,11 +2,11 @@ import { Header } from "../../components/header/Header";
 import { useEffect, useState } from "react";
 import {
     Button,
+    Checkbox,
     Input,
     Pagination,
     Select,
     SelectItem,
-    Spinner,
     Table,
     TableBody,
     TableCell,
@@ -187,6 +187,7 @@ const Component = () => {
                         <TableColumn align="center">{locale.TableHeaderFieldNameColumn}</TableColumn>
                         <TableColumn align="center">{locale.TableHeaderFieldTypeColumn}</TableColumn>
                         <TableColumn align="center">{locale.TableHeaderOptionsColumn}</TableColumn>
+                        <TableColumn align="center">{locale.TableHeaderRequiredColumn}</TableColumn>
                         <TableColumn align="center">{locale.TableHeaderRemarkColumn}</TableColumn>
                         <TableColumn align="center">{locale.TableHeaderHintColumn}</TableColumn>
                         <TableColumn align="center">{locale.TableHeaderActionsColumn}</TableColumn>
@@ -196,6 +197,7 @@ const Component = () => {
                             if (!field.radios) field.radios = [];
                             const TypeSelect = (
                                 <Select
+                                    isDisabled={field.disabled}
                                     variant="bordered"
                                     aria-label="select"
                                     className="w-36 mx-auto"
@@ -218,6 +220,7 @@ const Component = () => {
                             );
                             const RadioSelect = (
                                 <Select
+                                    isDisabled={field.disabled}
                                     hidden={!["checkbox", "select", "mulselect"].some((i) => i == field.field_type)}
                                     isOpen={!isRadioEditorOpen && field.id === focusFormField?.id}
                                     onOpenChange={(e) => {
@@ -268,6 +271,7 @@ const Component = () => {
                                     <TableCell className="min-w-48" align="center">
                                         <Input
                                             variant="bordered"
+                                            isDisabled={field.disabled}
                                             defaultValue={field.field_name}
                                             onValueChange={async (field_name) => {
                                                 await FormFieldRouter.update({ field_id: field.id, field_name });
@@ -279,8 +283,18 @@ const Component = () => {
                                         {TypeSelect}
                                     </TableCell>
                                     <TableCell align="center">{RadioSelect}</TableCell>
-                                    <TableCell align="center" className="w-1/3">
+                                    <TableCell align="center" className="w-12">
+                                        <Checkbox
+                                            isDisabled={field.disabled}
+                                            defaultSelected={field.required}
+                                            onValueChange={(required) => {
+                                                FormFieldRouter.update({ field_id: field.id, required });
+                                            }}
+                                        />
+                                    </TableCell>
+                                    <TableCell align="center" className="w-1/5">
                                         <Input
+                                            isDisabled={field.disabled}
                                             placeholder={locale.TableBodyNoRemark}
                                             variant="bordered"
                                             defaultValue={field.comment}
@@ -289,8 +303,9 @@ const Component = () => {
                                             }}
                                         />
                                     </TableCell>
-                                    <TableCell align="center" className="w-1/3">
+                                    <TableCell align="center" className="w-1/5">
                                         <Input
+                                            isDisabled={field.disabled}
                                             placeholder={locale.TableBodyNoHint}
                                             variant="bordered"
                                             defaultValue={field.placeholder}
@@ -299,24 +314,55 @@ const Component = () => {
                                             }}
                                         />
                                     </TableCell>
-                                    <TableCell className="min-w-48">
+                                    <TableCell className="min-w-32 max-w-32">
                                         <Button
                                             className="mr-1"
+                                            isIconOnly
                                             variant="bordered"
                                             color="primary"
                                             size="sm"
                                             onClick={() => changeFieldPosition(field.id, false)}
                                         >
-                                            {locale.TableBodyUponSort}
+                                            {"↑"}
                                         </Button>
                                         <Button
+                                            className="mr-1"
+                                            isIconOnly
                                             variant="bordered"
                                             color="primary"
                                             size="sm"
                                             onClick={() => changeFieldPosition(field.id, true)}
                                         >
-                                            {locale.TableBodyDownSort}
+                                            {"↓"}
                                         </Button>
+                                        {!field.disabled && (
+                                            <Button
+                                                isIconOnly
+                                                variant="bordered"
+                                                color="danger"
+                                                size="sm"
+                                                onClick={() => {
+                                                    chooseForm(formName);
+                                                    FormFieldRouter.update({ field_id: field.id, disabled: true });
+                                                }}
+                                            >
+                                                {"X"}
+                                            </Button>
+                                        )}
+                                        {field.disabled && (
+                                            <Button
+                                                isIconOnly
+                                                variant="bordered"
+                                                color="success"
+                                                size="sm"
+                                                onClick={() => {
+                                                    chooseForm(formName);
+                                                    FormFieldRouter.update({ field_id: field.id, disabled: false });
+                                                }}
+                                            >
+                                                {"O"}
+                                            </Button>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             );

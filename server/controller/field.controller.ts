@@ -36,12 +36,12 @@ async function create(query: FormFieldCreateRequest): Promise<FormFieldCreateRes
     if (!user) {
         return { success: false };
     }
-    const success = !!(await createField({ form_name, field_name, field_type }));
+    const success = !!(await createField({ form_name, field_name, field_type, disabled: false, required: false }));
     return { success };
 }
 
 async function update(query: FormFieldUpdateRequest): Promise<FormFieldUpdateResponse> {
-    const { field_id, field_name, field_type, position, comment, auth } = query;
+    const { field_id, field_name, field_type, position, disabled, required, comment, auth } = query;
     if (!field_id || !auth) {
         return { success: false, message: "参数错误" };
     }
@@ -59,6 +59,14 @@ async function update(query: FormFieldUpdateRequest): Promise<FormFieldUpdateRes
     }
     if (position) {
         const success = await updateSingleField(field_id, "position", position);
+        if (!success) return { success: false };
+    }
+    if (typeof required === "boolean") {
+        const success = await updateSingleField(field_id, "required", required);
+        if (!success) return { success: false };
+    }
+    if (typeof disabled === "boolean") {
+        const success = await updateSingleField(field_id, "disabled", disabled);
         if (!success) return { success: false };
     }
     if (typeof comment === "string") {

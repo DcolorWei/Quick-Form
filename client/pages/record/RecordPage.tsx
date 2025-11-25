@@ -174,7 +174,6 @@ const Component = () => {
                                         const value =
                                             radios?.find((r) => r.id === record?.field_value)?.radio_name ||
                                             record?.field_value;
-                                        console.log(fieldList.filter(() => itemChoose).length, record);
                                         return (
                                             <TableRow>
                                                 <TableCell className="min-w-32" align="center">

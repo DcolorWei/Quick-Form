@@ -119,7 +119,6 @@ const Component = () => {
         chunks.forEach(async (file) => {
             const { success, data } = await FileRouter.readxlsx({ file });
             if (!success || !data) return;
-            console.log(data);
             const { tempid, header } = data;
             setTempid(tempid);
             setImportOpen(true);
