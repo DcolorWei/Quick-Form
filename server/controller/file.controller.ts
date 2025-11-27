@@ -54,9 +54,11 @@ async function confirm(query: FileConfirmRequest): Promise<FileXlsxResponse> {
             field_name: fields[i].field,
             field_type: fields[i].type,
             required: false,
-            disabled: fields[i].check,
+            disabled: !fields[i].check,
         });
-        if (!field_id) continue;
+        if (!field_id || !["select", "mulselect", "checkbox"].includes(fields[i].type)) {
+            continue;
+        }
         for (const radio_name of header[i].sub || []) {
             await createRadio({ field_id, radio_name, useful: true });
         }

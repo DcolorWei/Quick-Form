@@ -56,6 +56,7 @@ export interface RecordAllResponse extends BaseResponse {
     data?: {
         records: Array<{
             item_id: string;
+            code: string;
             data: Array<RecordImpl>;
         }>;
         total: number;
