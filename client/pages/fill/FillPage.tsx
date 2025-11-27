@@ -2,15 +2,12 @@ import { useEffect, useState } from "react";
 import { Checkbox, Input, NumberInput, Pagination, Select, SelectItem, Textarea } from "@heroui/react";
 import { FormFieldImpl, RecordImpl } from "../../../shared/impl";
 import { RecordRouter } from "../../api/instance";
-import { RecordGetResponse } from "../../../shared/router/RecordRouter";
 import CheckModal from "./CheckModal";
 import { toast } from "../../methods/notify";
-import { useNavigate } from "react-router-dom";
 import { Locale } from "../../methods/locale";
 
 const Component = () => {
     const locale = Locale("FillPage");
-    const navigate = useNavigate();
 
     const [formName, setFormName] = useState<string>("");
     const [fieldList, setFieldList] = useState<FormFieldImpl[]>([]);
@@ -92,6 +89,15 @@ const Component = () => {
 
     function renderControl(field: FormFieldImpl) {
         const field_value = records.find((r) => r.field_id === field.id)?.field_value || "";
+        let render_value: string; // for origin from input
+        let choose_value: string; // for origin from select
+        if (field.radios?.find((i) => i.id == field_value)) {
+            choose_value = String(field_value);
+            render_value = String(field.radios?.find((i) => i.id == field_value)?.radio_name);
+        } else {
+            choose_value = String(field_value);
+            render_value = String(field_value);
+        }
         switch (field.field_type) {
             case "text": {
                 return (
@@ -109,7 +115,7 @@ const Component = () => {
                             labelPlacement="outside"
                             isRequired={field.required}
                             placeholder={field.placeholder || " "}
-                            defaultValue={String(field_value)}
+                            defaultValue={render_value}
                             onBlur={(e) => e?.target?.value && submitRecord(field.id, e.target.value)}
                             className="w-full"
                         />
@@ -132,8 +138,8 @@ const Component = () => {
                             labelPlacement="outside"
                             isRequired={field.required}
                             placeholder={field.placeholder || "mail@example.com"}
-                            defaultValue={String(field_value)}
-                            onValueChange={(text) => submitRecord(field.id, text)}
+                            defaultValue={render_value}
+                            onBlur={(e) => e?.target?.value && submitRecord(field.id, e.target.value)}
                             className="w-full"
                         />
                     </div>
@@ -155,7 +161,7 @@ const Component = () => {
                             labelPlacement="outside"
                             isRequired={field.required}
                             placeholder={field.placeholder}
-                            defaultValue={String(field_value)}
+                            defaultValue={render_value}
                             onValueChange={(text) => submitRecord(field.id, text)}
                             className="w-full"
                         />
@@ -178,8 +184,8 @@ const Component = () => {
                             labelPlacement="outside"
                             placeholder={field.placeholder}
                             isRequired={field.required}
-                            defaultValue={String(field_value)}
-                            onValueChange={(text) => submitRecord(field.id, text)}
+                            defaultValue={render_value}
+                            onBlur={(e) => e?.target?.value && submitRecord(field.id, e.target.value)}
                             className="w-full"
                             minRows={4}
                         />
@@ -202,7 +208,13 @@ const Component = () => {
                             labelPlacement="outside"
                             isRequired={field.required}
                             placeholder={field.placeholder}
-                            defaultValue={!field_value && field_value !== 0 ? undefined : Number(field_value)}
+                            defaultValue={
+                                !field_value && field_value !== 0
+                                    ? undefined
+                                    : isNaN(Number(render_value))
+                                      ? undefined
+                                      : Number(render_value)
+                            }
                             onValueChange={(number) => submitRecord(field.id, number)}
                             className="w-full"
                         />
@@ -224,7 +236,7 @@ const Component = () => {
                             labelPlacement="outside"
                             className="w-full"
                             isRequired={field.required}
-                            defaultSelectedKeys={[String(field_value)]}
+                            defaultSelectedKeys={[choose_value]}
                             onSelectionChange={({ currentKey }) => currentKey && submitRecord(field.id, currentKey)}
                             placeholder={field.placeholder || Locale("Common").DefaultSelectPlaceholder}
                         >
@@ -242,7 +254,7 @@ const Component = () => {
                         labelPlacement="outside"
                         className="w-full"
                         isRequired={field.required}
-                        defaultSelectedKeys={[String(field_value)]}
+                        defaultSelectedKeys={[choose_value]}
                         onSelectionChange={({ currentKey }) => currentKey && submitRecord(field.id, currentKey)}
                         placeholder={field.placeholder || Locale("Common").DefaultSelectPlaceholder}
                     >
@@ -262,7 +274,7 @@ const Component = () => {
                         <Checkbox
                             size="sm"
                             className="pb-2"
-                            defaultSelected={id === field_value}
+                            defaultSelected={id === choose_value}
                             onValueChange={(check) => submitRecord(field.id, check ? id : "")}
                         >
                             {radio_name}
